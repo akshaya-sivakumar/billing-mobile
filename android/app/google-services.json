@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "80716327756",
+    "project_id": "bilvacorp-billing",
+    "storage_bucket": "bilvacorp-billing.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80716327756:android:27778ec23da3718fc83de9",
+        "android_client_info": {
+          "package_name": "com.bilvacorp.billing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80716327756-5466612h54kvjq9qtalfbc5shvrd1vhg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLgzi28mZwD3p82udC_r1sxBM0vX4GJ_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "80716327756-5466612h54kvjq9qtalfbc5shvrd1vhg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
