@@ -1,6 +1,7 @@
 import 'package:billing/models/workMangerInputDataModel.dart';
 import 'package:billing/route_generator.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
@@ -14,7 +15,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final scaffoldkey = GlobalKey<ScaffoldMessengerState>();
-const immediatenotification = "com.bilvacorp.immediate.notification";
+const immediatenotification = "com.aksh.immediate.notification";
 
 void showToast({
   message,
@@ -83,17 +84,29 @@ void callbackDispatcher() {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
-  await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon')));
-  Workmanager().initialize(
-    callbackDispatcher,
+  await flutterLocalNotificationsPlugin.initialize(
+    const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: IOSInitializationSettings()),
+  );
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
   );
 
   runApp(const MyApp());
+}
+
+Future firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  return Future<void>.value();
+  //log("in background" + message.notification!.body.toString());
 }
 
 class MyApp extends StatelessWidget {

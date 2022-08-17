@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:billing/models/workMangerInputDataModel.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_notification_scheduler/firebase_notification_scheduler.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
 import '../main.dart';
 import '../widgets/textformfield.dart';
@@ -25,10 +29,52 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) async {
+      if (message != null) {
+        print(message.notification!.body);
+        print("--------");
+        print(message.data);
+      }
+    });
+    FirebaseMessaging.onMessage.listen((event) async {
+      print(event.data);
+
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+              'repeating channel id', 'repeating channel name',
+              channelDescription: 'repeating description');
+      const NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+      if (Platform.isAndroid) {
+        await flutterLocalNotificationsPlugin.show(1, event.notification!.title,
+            event.notification!.body, platformChannelSpecifics,
+            payload: json.encode(event.data));
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) async {
+      print("on meesage");
+      if (event != null) {
+        print(event.notification!.body);
+        print("--------");
+        print(event.data);
+      } else {
+        // redirectToSplash();
+      }
+      /*  MyApp.navigatorKey.currentState!.pushNamedAndRemoveUntil("/chatlist",
+          (route) {
+        return false;
+      }); */
+      //   MyApp.navigatorKey.currentState!.pushNamed("/chatlist");
+    });
   }
 
   Future<String> getFirebase() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
+    print(fcmToken);
     return fcmToken!;
   }
 
@@ -119,41 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
   var db = FirebaseFirestore.instance;
 
   void onSignin() async {
-    // Workmanager().registerOneOffTask(
-    //   immediatenotification,
-    //   immediatenotification,
-    //   inputData: WorkMangerInputData(
-    //           id: 1,
-    //           title: "Smart Billing",
-    //           body: 'Welcome ${"Akash".toString()}')
-    //       .toJson(),
-    // );
-    try {
-      await db
-          .collection("users")
-          .where("userName", isEqualTo: userController.text)
-          .get()
-          .then((value) => {
-                if (value.docs.isNotEmpty)
-                  {
-                    if (value.docs.first["password"] == passwordController.text)
-                      {
-                        showToast(
-                            message:
-                                'Welcome ${value.docs.first["userName"].toString()}'),
-                        if (value.docs.first["userRole"] == "Admin")
-                          {Navigator.pushNamed(context, AdminPanel.routeName)}
-                        else
-                          {}
-                      }
-                    else
-                      {showToast(message: 'Invalid Password', isError: true)}
-                  }
-                else
-                  {showToast(message: 'User Not found', isError: true)}
-              });
-    } on FirebaseAuthException catch (e) {
-      showToast(message: e.message.toString(), isError: true);
-    }
+    print(getFirebase());
   }
 }
