@@ -5,6 +5,7 @@ import 'package:billing/bloc/login_bloc/login_bloc.dart';
 import 'package:billing/models/login_request.dart';
 import 'package:billing/models/workMangerInputDataModel.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
+import 'package:billing/widgets/loader_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -37,10 +38,12 @@ class _LoginScreenState extends State<LoginScreen> {
     loginBloc = BlocProvider.of<LoginBloc>(context)
       ..stream.listen((state) {
         if (state is LoginDone) {
+          LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: "Login Successfully");
           Navigator.pushNamedAndRemoveUntil(
               context, AdminPanel.routeName, (route) => false);
         } else if (state is LoginError) {
+          LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: "Login failed");
         }
       });
@@ -118,19 +121,33 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  SizedBox siginInButton(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.8,
-      height: 50,
-      child: ElevatedButton(
-          onPressed: onSignin,
-          child: Text(
-            "Sign In",
-            style: Theme.of(context)
-                .textTheme
-                .subtitle1
-                ?.copyWith(color: Colors.white),
-          )),
+  Container siginInButton(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 60),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            height: 50,
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: ElevatedButton(
+                onPressed: onSignin,
+                child: Text(
+                  "Sign In",
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      ?.copyWith(color: Colors.white),
+                )),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: InkWell(
+                onTap: () {},
+                child: Text("If you dont have an account?Click here")),
+          )
+        ],
+      ),
     );
   }
 
@@ -179,8 +196,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onSignin() async {
     if (formKey.currentState!.validate()) {
+      LoaderWidget().showLoader(context);
       context.read<LoginBloc>().add(LoginRequestEvent(LoginRequest(
           Username: userController.text, Password: passwordController.text)));
+    } else {
+      LoaderWidget().showLoader(context, stopLoader: true);
     }
   }
 }
