@@ -5,12 +5,14 @@ class TextFieldWidget extends StatelessWidget {
   final Icon? leadingIcon;
   final bool isTitle;
   final TextEditingController controller;
+  final String? Function(String?)? validator;
   const TextFieldWidget(
       {Key? key,
       this.isTitle = false,
       required this.controller,
       required this.title,
-      this.leadingIcon})
+      this.leadingIcon,
+      this.validator})
       : super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class TextFieldWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 10.0),
             child: TextFormField(
                 controller: controller,
+                validator: validator,
                 style: Theme.of(context).textTheme.subtitle1,
                 decoration: InputDecoration(
                     contentPadding:

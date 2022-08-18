@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:billing/bloc/login_bloc/login_bloc.dart';
+import 'package:billing/models/login_request.dart';
 import 'package:billing/models/workMangerInputDataModel.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_notification_scheduler/firebase_notification_scheduler.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
 import '../main.dart';
@@ -25,23 +28,31 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   late Future<List<ScheduledNotification>> getScheduledNotificationFuture;
-
+  late LoginBloc loginBloc;
   @override
   void initState() {
     super.initState();
 
+    initNotification();
+    loginBloc = BlocProvider.of<LoginBloc>(context)
+      ..stream.listen((state) {
+        if (state is LoginDone) {
+          showToast(message: "Login Successfully");
+          Navigator.pushNamedAndRemoveUntil(
+              context, AdminPanel.routeName, (route) => false);
+        } else if (state is LoginError) {
+          showToast(message: "Login failed");
+        }
+      });
+  }
+
+  Future<void> initNotification() async {
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) async {
-      if (message != null) {
-        print(message.notification!.body);
-        print("--------");
-        print(message.data);
-      }
+      if (message != null) {}
     });
     FirebaseMessaging.onMessage.listen((event) async {
-      print(event.data);
-
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails(
               'repeating channel id', 'repeating channel name',
@@ -56,19 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) async {
-      print("on meesage");
-      if (event != null) {
-        print(event.notification!.body);
-        print("--------");
-        print(event.data);
-      } else {
-        // redirectToSplash();
-      }
-      /*  MyApp.navigatorKey.currentState!.pushNamedAndRemoveUntil("/chatlist",
-          (route) {
-        return false;
-      }); */
-      //   MyApp.navigatorKey.currentState!.pushNamed("/chatlist");
+      if (event != null) {}
     });
   }
 
@@ -78,10 +77,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return fcmToken!;
   }
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: loginBody(context),
+      body: Form(key: formKey, child: loginBody(context)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: siginInButton(context),
     );
@@ -151,12 +152,24 @@ class _LoginScreenState extends State<LoginScreen> {
           isTitle: true,
           leadingIcon: const Icon(Icons.account_box_rounded),
           title: "UserName",
+          validator: (value) {
+            if (value == "") {
+              return "Please enter username";
+            }
+            return null;
+          },
         ),
         TextFieldWidget(
           controller: passwordController,
           isTitle: true,
           leadingIcon: const Icon(Icons.lock),
           title: "Password",
+          validator: (value) {
+            if (value == "") {
+              return "Please enter valid password";
+            }
+            return null;
+          },
         ),
       ],
     ));
@@ -165,6 +178,9 @@ class _LoginScreenState extends State<LoginScreen> {
   var db = FirebaseFirestore.instance;
 
   void onSignin() async {
-    print(getFirebase());
+    if (formKey.currentState!.validate()) {
+      context.read<LoginBloc>().add(LoginRequestEvent(LoginRequest(
+          Username: userController.text, Password: passwordController.text)));
+    }
   }
 }
