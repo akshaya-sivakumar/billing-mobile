@@ -10,12 +10,11 @@ part 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
   SignupBloc() : super(SignupInitial()) {
-    LoginResponse response;
     on<SignupRequestEvent>((event, emit) async {
       emit(SignupLoad());
-      response = await SignupRepository().login(event.signupRequest);
+
       try {
-        response = await SignupRepository().login(event.signupRequest);
+        var response = await SignupRepository().login(event.signupRequest);
 
         emit(SignupDone(response));
       } catch (e) {

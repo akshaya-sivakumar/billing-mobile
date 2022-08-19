@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:billing/bloc/login_bloc/login_bloc.dart';
+import 'package:billing/bloc/signup_bloc/signup_bloc.dart';
 import 'package:billing/models/login_request.dart';
 import 'package:billing/models/workMangerInputDataModel.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
@@ -18,7 +19,7 @@ import '../main.dart';
 import '../widgets/textformfield.dart';
 
 class Signup extends StatefulWidget {
-  static String routeName = '/';
+  static String routeName = '/signup';
   const Signup({Key? key}) : super(key: key);
 
   @override
@@ -29,22 +30,22 @@ class _SignupState extends State<Signup> {
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   late Future<List<ScheduledNotification>> getScheduledNotificationFuture;
-  late LoginBloc loginBloc;
+  late SignupBloc signupBloc;
   @override
   void initState() {
     super.initState();
 
     initNotification();
-    loginBloc = BlocProvider.of<LoginBloc>(context)
+    signupBloc = BlocProvider.of<SignupBloc>(context)
       ..stream.listen((state) {
-        if (state is LoginDone) {
+        if (state is SignupDone) {
           LoaderWidget().showLoader(context, stopLoader: true);
-          showToast(message: state.loginResponse.message);
+          showToast(message: state.signupResponse.message);
           Navigator.pushNamedAndRemoveUntil(
               context, AdminPanel.routeName, (route) => false);
-        } else if (state is LoginError) {
+        } else if (state is SignupError) {
           LoaderWidget().showLoader(context, stopLoader: true);
-          showToast(message: state.error);
+          showToast(message: state.error, isError: true);
         }
       });
   }
@@ -87,7 +88,10 @@ class _SignupState extends State<Signup> {
     return Scaffold(
       body: Form(key: formKey, child: loginBody(context)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: siginInButton(context),
+      floatingActionButton:
+          WidgetsBinding.instance.window.viewInsets.bottom == 0
+              ? siginInButton(context)
+              : null,
     );
   }
 
@@ -197,7 +201,7 @@ class _SignupState extends State<Signup> {
   void onSignin() async {
     if (formKey.currentState!.validate()) {
       LoaderWidget().showLoader(context);
-      context.read<LoginBloc>().add(LoginRequestEvent(LoginRequest(
+      context.read<SignupBloc>().add(SignupRequestEvent(LoginRequest(
           Username: userController.text, Password: passwordController.text)));
     } else {
       LoaderWidget().showLoader(context, stopLoader: true);

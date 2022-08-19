@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
               context, AdminPanel.routeName, (route) => false);
         } else if (state is LoginError) {
           LoaderWidget().showLoader(context, stopLoader: true);
-          showToast(message: state.error);
+          showToast(message: state.error, isError: true);
         }
       });
   }
@@ -87,8 +87,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(key: formKey, child: loginBody(context)),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: siginInButton(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton:
+          WidgetsBinding.instance.window.viewInsets.bottom == 0
+              ? siginInButton(context)
+              : null,
     );
   }
 
