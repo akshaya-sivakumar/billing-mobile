@@ -4,6 +4,7 @@ import 'package:billing/screens/admin/admin_panel.dart';
 import 'package:billing/screens/admin/branches.dart';
 import 'package:billing/screens/admin/new_item_create.dart';
 import 'package:billing/screens/admin/users.dart';
+import 'package:billing/screens/dashboard.dart';
 import 'package:billing/screens/login.dart';
 import 'package:billing/screens/sign_up.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (_) => BlocProvider(
               create: (context) => SignupBloc(),
               child: Signup(),
+            ));
+  } else if (settings.name == Dashboard.routeName) {
+    return MaterialPageRoute(
+        builder: (_) => BlocProvider(
+              create: (context) => SignupBloc(),
+              child: Dashboard(),
             ));
   } else if (settings.name == NewItemCreatePage.routeName) {
     return MaterialPageRoute(builder: (_) => const NewItemCreatePage());

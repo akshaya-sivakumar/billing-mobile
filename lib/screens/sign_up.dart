@@ -6,6 +6,7 @@ import 'package:billing/bloc/signup_bloc/signup_bloc.dart';
 import 'package:billing/models/login_request.dart';
 import 'package:billing/models/workMangerInputDataModel.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
+import 'package:billing/screens/login.dart';
 import 'package:billing/widgets/loader_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -147,8 +148,11 @@ class _SignupState extends State<Signup> {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: InkWell(
-                onTap: () {},
-                child: Text("If you dont have an account?Click here")),
+                onTap: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, LoginScreen.routeName, (route) => false);
+                },
+                child: Text("Back to Login? Click here")),
           )
         ],
       ),

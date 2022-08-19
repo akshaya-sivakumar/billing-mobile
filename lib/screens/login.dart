@@ -5,6 +5,7 @@ import 'package:billing/bloc/login_bloc/login_bloc.dart';
 import 'package:billing/models/login_request.dart';
 import 'package:billing/models/workMangerInputDataModel.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
+import 'package:billing/screens/dashboard.dart';
 import 'package:billing/screens/sign_up.dart';
 import 'package:billing/widgets/loader_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: state.loginResponse.message);
           Navigator.pushNamedAndRemoveUntil(
-              context, AdminPanel.routeName, (route) => false);
+              context, Dashboard.routeName, (route) => false);
         } else if (state is LoginError) {
           LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: state.error, isError: true);
@@ -148,9 +149,9 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.only(top: 10),
             child: InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, Signup.routeName);
+                  Navigator.pushNamed(context, Dashboard.routeName);
                 },
-                child: Text("If you dont have an account?Click here")),
+                child: Text("If you dont have an account? Click here")),
           )
         ],
       ),
