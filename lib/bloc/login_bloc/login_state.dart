@@ -13,4 +13,8 @@ class LoginDone extends LoginState {
   LoginDone(this.loginResponse);
 }
 
-class LoginError extends LoginState {}
+class LoginError extends LoginState {
+  final String error;
+
+  LoginError(this.error);
+}

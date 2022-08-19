@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:billing/repository/login_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -11,12 +13,15 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginInitial()) {
     on<LoginRequestEvent>((event, emit) async {
+      LoginResponse response;
       emit(LoginLoad());
+
       try {
-        var response = await LoginRepository().login(event.loginRequest);
+        response = await LoginRepository().login(event.loginRequest);
         emit(LoginDone(response));
       } catch (e) {
-        emit(LoginError());
+        print(e);
+        emit(LoginError(e.toString()));
       }
     });
   }

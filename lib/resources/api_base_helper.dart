@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
@@ -16,7 +17,7 @@ class ApiBaseHelper {
   void handleResponse(http.Response response) {
     if (response.statusCode != 200) {
       logError(response.request.toString(), response.body);
-      throw "${response.statusCode} error";
+      throw "${json.decode(response.body)["message"]}";
     } else {
       logSuccess(response.request.toString(), response.body);
     }

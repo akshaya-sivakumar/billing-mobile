@@ -5,7 +5,6 @@ import 'package:billing/bloc/login_bloc/login_bloc.dart';
 import 'package:billing/models/login_request.dart';
 import 'package:billing/models/workMangerInputDataModel.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
-import 'package:billing/screens/sign_up.dart';
 import 'package:billing/widgets/loader_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,15 +17,15 @@ import 'package:workmanager/workmanager.dart';
 import '../main.dart';
 import '../widgets/textformfield.dart';
 
-class LoginScreen extends StatefulWidget {
+class Signup extends StatefulWidget {
   static String routeName = '/';
-  const LoginScreen({Key? key}) : super(key: key);
+  const Signup({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<Signup> createState() => _SignupState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupState extends State<Signup> {
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   late Future<List<ScheduledNotification>> getScheduledNotificationFuture;
@@ -134,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ElevatedButton(
                 onPressed: onSignin,
                 child: Text(
-                  "Sign In",
+                  "Sign Up",
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1
@@ -144,9 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, Signup.routeName);
-                },
+                onTap: () {},
                 child: Text("If you dont have an account?Click here")),
           )
         ],
@@ -163,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: Text(
-            "Sign In",
+            "Sign Up",
             style: Theme.of(context).textTheme.headline2,
           ),
         ),
@@ -198,8 +195,8 @@ class _LoginScreenState extends State<LoginScreen> {
   var db = FirebaseFirestore.instance;
 
   void onSignin() async {
-    LoaderWidget().showLoader(context);
     if (formKey.currentState!.validate()) {
+      LoaderWidget().showLoader(context);
       context.read<LoginBloc>().add(LoginRequestEvent(LoginRequest(
           Username: userController.text, Password: passwordController.text)));
     } else {
