@@ -38,3 +38,9 @@ class UserDeleteLoad extends SignupState {}
 class UserDeleted extends SignupState {}
 
 class UserDeleteError extends SignupState {}
+
+class UpdateUserLoad extends SignupState {}
+
+class UpdateUserDone extends SignupState {}
+
+class UpdateUserError extends SignupState {}

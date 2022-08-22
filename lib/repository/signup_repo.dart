@@ -28,6 +28,16 @@ class SignupRepository {
     return userResponse;
   }
 
+  Future<dynamic> updateUser(
+      int id, CreateuserRequest loginRequest) async {
+    var response = await ApiBaseHelper()
+        .putMethod("/user/${id}", json.encode(loginRequest));
+
+   
+
+    return response;
+  }
+
   Future<dynamic> deleteUser(int id) async {
     var response = await ApiBaseHelper().deleteMethod("/user/${id}");
 

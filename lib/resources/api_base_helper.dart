@@ -35,6 +35,14 @@ class ApiBaseHelper {
     return response;
   }
 
+  Future<http.Response> putMethod(String url, String request) async {
+    var response = await http.post(Uri.parse(AppConstants.base_url + url),
+        headers: {"X-ENCRYPT": "false"}, body: request);
+
+    handleResponse(response);
+    return response;
+  }
+
   void logSuccess(String logName, dynamic msg) {
     log('\x1B[32m$logName $msg\x1B[0m');
   }

@@ -202,6 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var db = FirebaseFirestore.instance;
 
   void onSignin() async {
+    getFirebase();
     LoaderWidget().showLoader(context);
     if (formKey.currentState!.validate()) {
       context.read<LoginBloc>().add(LoginRequestEvent(LoginRequest(

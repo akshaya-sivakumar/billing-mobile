@@ -201,17 +201,37 @@ class _UsersState extends State<Users> {
                       style: TextButton.styleFrom(
                           backgroundColor: Theme.of(context).primaryColor),
                       onPressed: () async {
-                        LoaderWidget().showLoader(context);
-                        if (formKey.currentState!.validate()) {
-                          context.read<SignupBloc>().add(SignupRequestEvent(
-                              CreateuserRequest(
-                                  Username: userName.text,
-                                  Password: passwordController.text,
-                                  Role: userRole,
-                                  Branch: int.parse(
-                                      branchCode == "" ? "0" : branchCode))));
+                        if (id == 0) {
+                          LoaderWidget().showLoader(context);
+
+                          if (formKey.currentState!.validate()) {
+                            context.read<SignupBloc>().add(SignupRequestEvent(
+                                CreateuserRequest(
+                                    Username: userName.text,
+                                    Password: passwordController.text,
+                                    Role: userRole,
+                                    Branch: int.parse(
+                                        branchCode == "" ? "0" : branchCode))));
+                          } else {
+                            LoaderWidget()
+                                .showLoader(context, stopLoader: true);
+                          }
                         } else {
-                          LoaderWidget().showLoader(context, stopLoader: true);
+  LoaderWidget().showLoader(context);
+
+                          if (formKey.currentState!.validate()) {
+                            context.read<SignupBloc>().add(SignupRequestEvent(
+                                CreateuserRequest(
+                                    Username: userName.text,
+                                    Password: passwordController.text,
+                                    Role: userRole,
+                                    Branch: int.parse(
+                                        branchCode == "" ? "0" : branchCode))));
+                          } else {
+                            LoaderWidget()
+                                .showLoader(context, stopLoader: true);
+                          }
+
                         }
                       },
                       label:

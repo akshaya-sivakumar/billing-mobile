@@ -16,3 +16,10 @@ class DeleteUserEvent extends SignupEvent {
 
   DeleteUserEvent(this.id);
 }
+
+class UpdateUserEvent extends SignupEvent {
+  final int id;
+  final CreateuserRequest request;
+
+  UpdateUserEvent(this.id, this.request);
+}
