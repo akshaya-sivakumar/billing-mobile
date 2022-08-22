@@ -18,14 +18,14 @@ class _AdminPanelState extends State<AdminPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          title: const Text("Admin Panel"),
-        ),
-        body: Container(
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: const Text("Admin Panel"),
+      ),
+      body: SafeArea(
+        child: Container(
           padding: const EdgeInsets.all(20),
           height: MediaQuery.of(context).size.height,
           child: Wrap(
