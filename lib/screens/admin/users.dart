@@ -34,15 +34,21 @@ class _UsersState extends State<Users> {
     signupBloc = BlocProvider.of<SignupBloc>(context)
       ..stream.listen((state) {
         if (state is SignupDone) {
+          signupBloc.add(FetchUserEvent());
           LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: state.signupResponse.message);
           clearData();
-          signupBloc.add(FetchUserEvent());
+
           /*   Navigator.pushNamedAndRemoveUntil(
               context, AdminPanel.routeName, (route) => false); */
         } else if (state is SignupError) {
           LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: state.error, isError: true);
+        } else if (state is UserDeleted) {
+          signupBloc.add(FetchUserEvent());
+          showToast(message: "User deleted successfully");
+        } else if (state is UserDeleteError) {
+          showToast(message: "Something went wrong");
         }
       });
     //  signupBloc = BlocProvider.of<SignupBloc>(context);
@@ -76,22 +82,40 @@ class _UsersState extends State<Users> {
                   TextFieldWidget(
                     controller: userName,
                     title: "User",
+                    validator: (value) {
+                      if (userName.text == null || userName.text == "") {
+                        return "Please enter username";
+                      }
+                    },
                   ),
                   TextFieldWidget(
                     controller: passwordController,
                     title: "Password",
+                    validator: (value) {
+                      if (passwordController.text == null ||
+                          passwordController.text == "") {
+                        return "Please enter password";
+                      }
+                    },
                   ),
                   Container(
+                    //height: 70,
+                    //margin: const EdgeInsets.symmetric(vertical: 20.0),
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(10)),
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 10),
                     child: DropdownButtonFormField(
-                        decoration: const InputDecoration.collapsed(
-                          hintText: 'Select Role',
-                        ),
+                        validator: (value) {
+                          if (value == null || value == "") {
+                            return "Please select role";
+                          }
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.black)),
+                            // filled: true,
+                            hintStyle: TextStyle(color: Colors.grey[800]),
+                            hintText: "Select Role",
+                            fillColor: Colors.blue[200]),
                         value: userRole == "" ? null : userRole,
                         items: ["Admin", "User"].map((value) {
                           return DropdownMenuItem<String>(
@@ -119,20 +143,26 @@ class _UsersState extends State<Users> {
                                 child: Container(
                                   width: state is BranchLoad
                                       ? MediaQuery.of(context).size.width * 0.8
-                                      : MediaQuery.of(context).size.width * 0.9,
+                                      : MediaQuery.of(context).size.width *
+                                          0.95,
                                   padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 20.0, horizontal: 10),
+
+                                  /*   margin: const EdgeInsets.symmetric(
+                                      vertical: 20.0, horizontal: 10), */
                                   child: DropdownButtonFormField(
                                       value:
                                           branchCode == "" ? null : branchCode,
-                                      decoration:
-                                          const InputDecoration.collapsed(
-                                        hintText: 'Select Branch',
-                                      ),
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                  color: Colors.black)),
+                                          // filled: true,
+                                          hintStyle: TextStyle(
+                                              color: Colors.grey[800]),
+                                          hintText: "Select Branch",
+                                          fillColor: Colors.blue[200]),
                                       items: branchList.map((value) {
                                         return DropdownMenuItem<String>(
                                           value: value.ID.toString(),
@@ -163,14 +193,15 @@ class _UsersState extends State<Users> {
                       style: TextButton.styleFrom(
                           backgroundColor: Theme.of(context).primaryColor),
                       onPressed: () async {
+                        LoaderWidget().showLoader(context);
                         if (formKey.currentState!.validate()) {
-                          LoaderWidget().showLoader(context);
                           context.read<SignupBloc>().add(SignupRequestEvent(
                               CreateuserRequest(
                                   Username: userName.text,
                                   Password: passwordController.text,
                                   Role: userRole,
-                                  Branch: int.parse(branchCode))));
+                                  Branch: int.parse(
+                                      branchCode == "" ? "0" : branchCode))));
                         } else {
                           LoaderWidget().showLoader(context, stopLoader: true);
                         }
@@ -227,7 +258,10 @@ class _UsersState extends State<Users> {
                                   Icons.delete,
                                   color: Colors.red,
                                 ),
-                                onPressed: () async {},
+                                onPressed: () async {
+                                  signupBloc
+                                      .add(DeleteUserEvent(users[index].ID));
+                                },
                               ),
                             ],
                           ),

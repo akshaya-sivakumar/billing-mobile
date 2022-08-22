@@ -29,6 +29,12 @@ class ApiBaseHelper {
     return response;
   }
 
+  Future<http.Response> deleteMethod(String url) async {
+    var response = await http.delete(Uri.parse(AppConstants.base_url + url));
+    handleResponse(response);
+    return response;
+  }
+
   void logSuccess(String logName, dynamic msg) {
     log('\x1B[32m$logName $msg\x1B[0m');
   }

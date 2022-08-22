@@ -32,3 +32,9 @@ class FetchUserError extends SignupState {
 
   FetchUserError(this.error);
 }
+
+class UserDeleteLoad extends SignupState {}
+
+class UserDeleted extends SignupState {}
+
+class UserDeleteError extends SignupState {}

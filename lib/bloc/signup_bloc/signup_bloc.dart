@@ -35,5 +35,17 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         emit(FetchUserError(e.toString()));
       }
     });
+
+    on<DeleteUserEvent>((event, emit) async {
+      emit(UserDeleteLoad());
+
+      try {
+        var response = await SignupRepository().deleteUser(event.id);
+
+        emit(UserDeleted());
+      } catch (e) {
+        emit(UserDeleteError());
+      }
+    });
   }
 }

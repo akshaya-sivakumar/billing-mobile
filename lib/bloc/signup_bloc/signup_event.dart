@@ -10,3 +10,9 @@ class SignupRequestEvent extends SignupEvent {
 }
 
 class FetchUserEvent extends SignupEvent {}
+
+class DeleteUserEvent extends SignupEvent {
+  final int id;
+
+  DeleteUserEvent(this.id);
+}

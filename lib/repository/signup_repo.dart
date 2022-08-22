@@ -27,4 +27,10 @@ class SignupRepository {
 
     return userResponse;
   }
+
+  Future<dynamic> deleteUser(int id) async {
+    var response = await ApiBaseHelper().deleteMethod("/user/${id}");
+
+    return response;
+  }
 }
