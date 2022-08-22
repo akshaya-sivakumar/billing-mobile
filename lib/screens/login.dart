@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: state.loginResponse.message);
           Navigator.pushNamedAndRemoveUntil(
-              context, Dashboard.routeName, (route) => false);
+              context, AdminPanel.routeName, (route) => false);
         } else if (state is LoginError) {
           LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: state.error, isError: true);

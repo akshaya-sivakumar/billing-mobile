@@ -203,12 +203,12 @@ class _SignupState extends State<Signup> {
   var db = FirebaseFirestore.instance;
 
   void onSignin() async {
-    if (formKey.currentState!.validate()) {
+  /*   if (formKey.currentState!.validate()) {
       LoaderWidget().showLoader(context);
       context.read<SignupBloc>().add(SignupRequestEvent(LoginRequest(
           Username: userController.text, Password: passwordController.text)));
     } else {
       LoaderWidget().showLoader(context, stopLoader: true);
-    }
+    } */
   }
 }

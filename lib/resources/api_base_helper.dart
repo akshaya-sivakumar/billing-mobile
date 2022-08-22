@@ -24,7 +24,7 @@ class ApiBaseHelper {
   }
 
   Future<http.Response> getMethod(String url) async {
-    var response = await http.get(Uri.parse(url));
+    var response = await http.get(Uri.parse(AppConstants.base_url + url));
     handleResponse(response);
     return response;
   }

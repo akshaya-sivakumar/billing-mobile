@@ -1,3 +1,4 @@
+import 'package:billing/bloc/branch_bloc/branch_bloc.dart';
 import 'package:billing/bloc/login_bloc/login_bloc.dart';
 import 'package:billing/bloc/signup_bloc/signup_bloc.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
@@ -37,7 +38,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   } else if (settings.name == Branches.routeName) {
     return MaterialPageRoute(builder: (_) => const Branches());
   } else if (settings.name == Users.routeName) {
-    return MaterialPageRoute(builder: (_) => const Users());
+    return MaterialPageRoute(
+        builder: (_) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => BranchBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => SignupBloc(),
+                ),
+              ],
+              child: const Users(),
+            ));
   } else {
     return _errorRoute();
   }

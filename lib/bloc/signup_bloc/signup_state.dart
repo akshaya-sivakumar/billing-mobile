@@ -18,3 +18,17 @@ class SignupError extends SignupState {
 
   SignupError(this.error);
 }
+
+class FetchUserDone extends SignupState {
+  final List<UserDetail> userList;
+
+  FetchUserDone(this.userList);
+}
+
+class FetchUserLoad extends SignupState {}
+
+class FetchUserError extends SignupState {
+  final String error;
+
+  FetchUserError(this.error);
+}

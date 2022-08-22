@@ -1,3 +1,5 @@
+import 'package:billing/models/createUser_request.dart';
+import 'package:billing/models/userDetail.dart';
 import 'package:billing/repository/signup_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -19,6 +21,18 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         emit(SignupDone(response));
       } catch (e) {
         emit(SignupError(e.toString()));
+      }
+    });
+
+    on<FetchUserEvent>((event, emit) async {
+      emit(FetchUserLoad());
+
+      try {
+        var response = await SignupRepository().fetchUsers();
+
+        emit(FetchUserDone(response));
+      } catch (e) {
+        emit(FetchUserError(e.toString()));
       }
     });
   }
