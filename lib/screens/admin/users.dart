@@ -150,6 +150,14 @@ class _UsersState extends State<Users> {
                                   /*   margin: const EdgeInsets.symmetric(
                                       vertical: 20.0, horizontal: 10), */
                                   child: DropdownButtonFormField(
+                                      validator: (value) {
+                                        if (userRole != "Admin") {
+                                          if (userName.text == null ||
+                                              userName.text == "") {
+                                            return "Please select branch";
+                                          }
+                                        }
+                                      },
                                       value:
                                           branchCode == "" ? null : branchCode,
                                       decoration: InputDecoration(
