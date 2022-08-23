@@ -32,6 +32,7 @@ class TextFieldWidget extends StatelessWidget {
             child: TextFormField(
                 controller: controller,
                 validator: validator,
+                // autovalidateMode: AutovalidateMode.always,
                 style: Theme.of(context).textTheme.subtitle1,
                 decoration: InputDecoration(
                     contentPadding:

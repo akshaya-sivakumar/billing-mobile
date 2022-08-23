@@ -46,6 +46,7 @@ class _NewItemCreatePageState extends State<NewItemCreatePage> {
     super.initState();
   }
 
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,26 +59,28 @@ class _NewItemCreatePageState extends State<NewItemCreatePage> {
           style: TextButton.styleFrom(
               backgroundColor: Theme.of(context).primaryColor),
           onPressed: () async {
-            log(selectedSidedish.join(","));
-            context.read<NewItemBloc>().add(createNewitem(NewitemRequest(
-                Itemname: itemController.text,
-                Itemprice: "100",
-                Sidedishes: selectedSidedish.join(","),
-                Itemquantity: quantityController.text,
-                Itemstatus: true)));
-            itemController.clear();
-            quantityController.clear();
-            unitController.clear();
-            setState(() {
-              selectedSidedish.clear();
-            });
+            if (formKey.currentState!.validate()) {
+              log(selectedSidedish.join(","));
+              context.read<NewItemBloc>().add(createNewitem(NewitemRequest(
+                  Itemname: itemController.text,
+                  Itemprice: "100",
+                  Sidedishes: selectedSidedish.join(","),
+                  Itemquantity: quantityController.text,
+                  Itemstatus: true)));
+              itemController.clear();
+              quantityController.clear();
+              unitController.clear();
+              setState(() {
+                selectedSidedish.clear();
+              });
+            }
           },
           label: const Text("Create"),
           icon: const Icon(Icons.add)),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
+      body: Form(
+        key: formKey,
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             //    crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,6 +88,12 @@ class _NewItemCreatePageState extends State<NewItemCreatePage> {
               TextFieldWidget(
                 controller: itemController,
                 title: "Name",
+                validator: (value) {
+                  if (itemController.text == null ||
+                      itemController.text == "") {
+                    return "Please enter Item Name";
+                  }
+                },
               ),
               Row(
                 children: [
@@ -93,6 +102,12 @@ class _NewItemCreatePageState extends State<NewItemCreatePage> {
                     child: TextFieldWidget(
                       controller: quantityController,
                       title: "Quantity",
+                      validator: (value) {
+                        if (quantityController.text == null ||
+                            quantityController.text == "") {
+                          return "Please enter Item Name";
+                        }
+                      },
                     ),
                   ),
                   SizedBox(
@@ -100,6 +115,12 @@ class _NewItemCreatePageState extends State<NewItemCreatePage> {
                     child: TextFieldWidget(
                       controller: unitController,
                       title: "Unit",
+                      validator: (value) {
+                        if (unitController.text == null ||
+                            unitController.text == "") {
+                          return "Please enter Item Name";
+                        }
+                      },
                     ),
                   ),
                   /*  Container(
