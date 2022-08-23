@@ -28,12 +28,9 @@ class SignupRepository {
     return userResponse;
   }
 
-  Future<dynamic> updateUser(
-      int id, CreateuserRequest loginRequest) async {
+  Future<dynamic> updateUser(int id, CreateuserRequest loginRequest) async {
     var response = await ApiBaseHelper()
         .putMethod("/user/${id}", json.encode(loginRequest));
-
-   
 
     return response;
   }

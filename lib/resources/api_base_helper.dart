@@ -36,7 +36,7 @@ class ApiBaseHelper {
   }
 
   Future<http.Response> putMethod(String url, String request) async {
-    var response = await http.post(Uri.parse(AppConstants.base_url + url),
+    var response = await http.put(Uri.parse(AppConstants.base_url + url),
         headers: {"X-ENCRYPT": "false"}, body: request);
 
     handleResponse(response);

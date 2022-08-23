@@ -36,7 +36,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   } else if (settings.name == AdminPanel.routeName) {
     return MaterialPageRoute(builder: (_) => const AdminPanel());
   } else if (settings.name == Branches.routeName) {
-    return MaterialPageRoute(builder: (_) => const Branches());
+    return MaterialPageRoute(
+        builder: (_) => BlocProvider(
+              create: (context) => BranchBloc(),
+              child: const Branches(),
+            ));
   } else if (settings.name == Users.routeName) {
     return MaterialPageRoute(
         builder: (_) => MultiBlocProvider(
