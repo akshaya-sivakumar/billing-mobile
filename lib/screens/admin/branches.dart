@@ -19,6 +19,7 @@ class Branches extends StatefulWidget {
 class _BranchesState extends State<Branches> {
   TextEditingController itemController = TextEditingController();
   late BranchBloc branchBloc;
+  final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     branchBloc = BlocProvider.of<BranchBloc>(context);
@@ -56,101 +57,116 @@ class _BranchesState extends State<Branches> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Branches")),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFieldWidget(
-            controller: itemController,
-            title: "Branch",
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton.icon(
-                    style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor),
-                    onPressed: () async {
-                      id == 0
-                          ? context.read<BranchBloc>().add(CreateBranch(
-                              BranchRequest(Branchname: itemController.text)))
-                          : context.read<BranchBloc>().add(UpdateBranchEvent(id,
-                              BranchRequest(Branchname: itemController.text)));
-                      itemController.clear();
-                    },
-                    label:
-                        id == 0 ? const Text("Create") : const Text("Update"),
-                    icon: id == 0
-                        ? const Icon(Icons.add)
-                        : const Icon(Icons.update))
-              ],
+      body: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFieldWidget(
+              controller: itemController,
+              title: "Branch",
+              validator: (value) {
+                if (itemController.text == null || itemController.text == "") {
+                  return "Please enter Branch name";
+                }
+              },
             ),
-          ),
-          BlocBuilder<BranchBloc, BranchState>(
-            builder: (context, state) {
-              if (state is BranchDone) {
-                branches = state.branchList;
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: branches.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        selected: id == branches[index].ID,
-                        selectedTileColor: Theme.of(context).primaryColor,
-                        title: Text(
-                          branches[index].branchName,
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (branches[index].ID != id)
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.edit,
-                                  color: Colors.blue,
-                                ),
-                                onPressed: () async {
-                                  id = branches[index].ID;
-                                  itemController.text =
-                                      branches[index].branchName;
-                                  setState(() {});
-                                },
-                              )
-                            else
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.clear,
-                                  color: Colors.black,
-                                ),
-                                onPressed: () async {
-                                  id = 0;
-                                  itemController.clear();
-                                  setState(() {});
-                                },
-                              ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                              onPressed: () async {
-                                branchBloc
-                                    .add(DeleteBranchEvent(branches[index].ID));
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton.icon(
+                      style: TextButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor),
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          id == 0
+                              ? context.read<BranchBloc>().add(CreateBranch(
+                                  BranchRequest(
+                                      Branchname: itemController.text)))
+                              : context.read<BranchBloc>().add(
+                                  UpdateBranchEvent(
+                                      id,
+                                      BranchRequest(
+                                          Branchname: itemController.text)));
+                          itemController.clear();
+                        }
+                      },
+                      label:
+                          id == 0 ? const Text("Create") : const Text("Update"),
+                      icon: id == 0
+                          ? const Icon(Icons.add)
+                          : const Icon(Icons.update))
+                ],
+              ),
+            ),
+            BlocBuilder<BranchBloc, BranchState>(
+              builder: (context, state) {
+                if (state is BranchDone) {
+                  branches = state.branchList;
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: branches.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          selected: id == branches[index].ID,
+                          selectedTileColor: Theme.of(context).primaryColor,
+                          title: Text(
+                            branches[index].branchName,
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (branches[index].ID != id)
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.blue,
+                                  ),
+                                  onPressed: () async {
+                                    id = branches[index].ID;
+                                    itemController.text =
+                                        branches[index].branchName;
 
-              return CircularProgressIndicator();
-            },
-          ),
-        ],
+                                    setState(() {});
+                                  },
+                                )
+                              else
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.clear,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () async {
+                                    id = 0;
+                                    itemController.clear();
+                                    setState(() {});
+                                  },
+                                ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () async {
+                                  branchBloc.add(
+                                      DeleteBranchEvent(branches[index].ID));
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }
+
+                return CircularProgressIndicator();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

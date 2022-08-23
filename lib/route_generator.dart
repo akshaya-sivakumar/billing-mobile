@@ -6,6 +6,7 @@ import 'package:billing/bloc/signup_bloc/signup_bloc.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
 import 'package:billing/screens/admin/branches.dart';
 import 'package:billing/screens/admin/new_item_create.dart';
+import 'package:billing/screens/admin/sidedishes.dart';
 import 'package:billing/screens/admin/users.dart';
 import 'package:billing/screens/dashboard.dart';
 import 'package:billing/screens/login.dart';
@@ -53,6 +54,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (_) => BlocProvider(
               create: (context) => BranchBloc(),
               child: const Branches(),
+            ));
+  } else if (settings.name == SideDishes.routeName) {
+    return MaterialPageRoute(
+        builder: (_) => BlocProvider(
+              create: (context) => SidedishBloc(),
+              child: const SideDishes(),
             ));
   } else if (settings.name == Users.routeName) {
     return MaterialPageRoute(

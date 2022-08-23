@@ -14,3 +14,21 @@ class SidedishDone extends SidedishState {
 }
 
 class SidedishError extends SidedishState {}
+
+class CreateSidedishLoad extends SidedishState {}
+
+class CreateSidedishDone extends SidedishState {}
+
+class CreateSidedishError extends SidedishState {}
+
+class UpdateSidedishLoad extends SidedishState {}
+
+class UpdateSidedishDone extends SidedishState {}
+
+class UpdateSidedishError extends SidedishState {}
+
+class DeleteSidedishLoad extends SidedishState {}
+
+class DeleteSidedishDone extends SidedishState {}
+
+class DeleteSidedishError extends SidedishState {}

@@ -35,19 +35,28 @@ class _UsersState extends State<Users> {
       ..stream.listen((state) {
         if (state is SignupDone) {
           signupBloc.add(FetchUserEvent());
-          LoaderWidget().showLoader(context, stopLoader: true);
+
           showToast(message: state.signupResponse.message);
           clearData();
+          LoaderWidget().showLoader(context, stopLoader: true);
 
           /*   Navigator.pushNamedAndRemoveUntil(
               context, AdminPanel.routeName, (route) => false); */
         } else if (state is SignupError) {
-          LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: state.error, isError: true);
+          LoaderWidget().showLoader(context, stopLoader: true);
         } else if (state is UserDeleted) {
           signupBloc.add(FetchUserEvent());
           showToast(message: "User deleted successfully");
         } else if (state is UserDeleteError) {
+          showToast(message: "Something went wrong");
+        } else if (state is UpdateUserDone) {
+          LoaderWidget().showLoader(context, stopLoader: true);
+          signupBloc.add(FetchUserEvent());
+          showToast(message: "Updated successfully");
+          clearData();
+        } else if (state is UpdateUserError) {
+          LoaderWidget().showLoader(context, stopLoader: true);
           showToast(message: "Something went wrong");
         }
       });
@@ -92,9 +101,11 @@ class _UsersState extends State<Users> {
                     controller: passwordController,
                     title: "Password",
                     validator: (value) {
-                      if (passwordController.text == null ||
-                          passwordController.text == "") {
-                        return "Please enter password";
+                      if (id == 0) {
+                        if (passwordController.text == null ||
+                            passwordController.text == "") {
+                          return "Please enter password";
+                        }
                       }
                     },
                   ),
@@ -217,10 +228,11 @@ class _UsersState extends State<Users> {
                                 .showLoader(context, stopLoader: true);
                           }
                         } else {
-  LoaderWidget().showLoader(context);
+                          LoaderWidget().showLoader(context);
 
                           if (formKey.currentState!.validate()) {
-                            context.read<SignupBloc>().add(SignupRequestEvent(
+                            context.read<SignupBloc>().add(UpdateUserEvent(
+                                id,
                                 CreateuserRequest(
                                     Username: userName.text,
                                     Password: passwordController.text,
@@ -231,7 +243,6 @@ class _UsersState extends State<Users> {
                             LoaderWidget()
                                 .showLoader(context, stopLoader: true);
                           }
-
                         }
                       },
                       label:
@@ -327,17 +338,19 @@ class _UsersState extends State<Users> {
       });
     }); */
     id = users[index].ID;
-    passwordController.text = users[index].password;
+    passwordController.text = "";
     branchCode = users[index].branch.toString();
     userRole = users[index].role;
     userName.text = users[index].username;
   }
 
   void clearData() {
-    userName.clear();
-    passwordController.clear();
-    branchCode = "";
-    userRole = "";
-    id = 0;
+    setState(() {
+      userName.clear();
+      passwordController.clear();
+      branchCode = "";
+      userRole = "";
+      id = 0;
+    });
   }
 }

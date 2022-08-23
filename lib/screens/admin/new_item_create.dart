@@ -5,6 +5,7 @@ import 'package:billing/bloc/sidedish_bloc/sidedish_bloc.dart';
 import 'package:billing/main.dart';
 import 'package:billing/models/newItem_request.dart';
 import 'package:billing/models/sidedish_detail.dart';
+import 'package:billing/screens/admin/sidedishes.dart';
 import 'package:billing/widgets/textformfield.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,9 @@ class _NewItemCreatePageState extends State<NewItemCreatePage> {
             itemController.clear();
             quantityController.clear();
             unitController.clear();
-            selectedSidedish.clear();
+            setState(() {
+              selectedSidedish.clear();
+            });
           },
           label: const Text("Create"),
           icon: const Icon(Icons.add)),
@@ -96,7 +99,7 @@ class _NewItemCreatePageState extends State<NewItemCreatePage> {
                     width: MediaQuery.of(context).size.width * 0.57,
                     child: TextFieldWidget(
                       controller: unitController,
-                      title: "",
+                      title: "Unit",
                     ),
                   ),
                   /*  Container(
@@ -134,7 +137,12 @@ class _NewItemCreatePageState extends State<NewItemCreatePage> {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(SideDishes.routeName)
+                              .then(
+                                  (value) => sidedishBloc.add(FetchSidedish()));
+                        },
                         icon: const Icon(
                           Icons.add_box_rounded,
                           size: 30,

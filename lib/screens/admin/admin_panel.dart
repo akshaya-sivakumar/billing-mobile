@@ -1,5 +1,6 @@
 import 'package:billing/screens/admin/branches.dart';
 import 'package:billing/screens/admin/new_item_create.dart';
+import 'package:billing/screens/admin/sidedishes.dart';
 import 'package:billing/screens/admin/users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,9 @@ class _AdminPanelState extends State<AdminPanel> {
               }),
               adminCard(context, "Menu", () {
                 Navigator.of(context).pushNamed(NewItemCreatePage.routeName);
+              }),
+              adminCard(context, "Side dish", () {
+                Navigator.of(context).pushNamed(SideDishes.routeName);
               })
             ],
           ),
