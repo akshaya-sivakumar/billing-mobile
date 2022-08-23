@@ -1,5 +1,7 @@
 import 'package:billing/bloc/branch_bloc/branch_bloc.dart';
 import 'package:billing/bloc/login_bloc/login_bloc.dart';
+import 'package:billing/bloc/newItem_bloc/new_item_bloc.dart';
+import 'package:billing/bloc/sidedish_bloc/sidedish_bloc.dart';
 import 'package:billing/bloc/signup_bloc/signup_bloc.dart';
 import 'package:billing/screens/admin/admin_panel.dart';
 import 'package:billing/screens/admin/branches.dart';
@@ -32,7 +34,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
               child: Dashboard(),
             ));
   } else if (settings.name == NewItemCreatePage.routeName) {
-    return MaterialPageRoute(builder: (_) => const NewItemCreatePage());
+    return MaterialPageRoute(
+        builder: (_) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => SidedishBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => NewItemBloc(),
+                ),
+              ],
+              child: const NewItemCreatePage(),
+            ));
   } else if (settings.name == AdminPanel.routeName) {
     return MaterialPageRoute(builder: (_) => const AdminPanel());
   } else if (settings.name == Branches.routeName) {
